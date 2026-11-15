@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2b6f72">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>離線運動紀錄</title>
+  <style>
+    :root{--teal:#2b6f72;--ink:#24383a;--bg:#f3f6f4;--card:#fff;--muted:#607477;--line:#dbe5e3;--soft:#e9f3f1}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}.wrap{max-width:680px;margin:auto;padding:16px 14px 48px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:24px;margin:4px 0}h2{font-size:18px;margin:0 0 12px}.card{background:var(--card);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #284b4d12}.sub{color:var(--muted);font-size:14px;margin:4px 0}.header-actions{display:flex;gap:8px}button,input{font:inherit}button{border:0;border-radius:10px;padding:11px 14px;background:var(--teal);color:#fff;font-weight:700;cursor:pointer}.secondary{background:#e5ecea;color:var(--ink)}.backup-button{font-size:14px;padding:9px 11px}input{width:100%;padding:10px;border:1px solid #cbd9d6;border-radius:10px;margin-top:5px;color:var(--ink);background:#fff}.input-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.rows label{display:block;margin-top:11px;font-size:14px}.field-title{font-weight:800;margin-top:15px}.hint{font-size:13px;color:var(--muted);margin:5px 0 0}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summary{background:var(--soft);border-radius:12px;padding:11px 9px;font-size:13px}.summary b{display:block;color:var(--teal);font-size:19px;margin-top:4px;word-break:break-word}.stat-list{border:1px solid var(--line);border-radius:12px;overflow:hidden}.stat-row{display:flex;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid var(--line)}.stat-row:last-child{border-bottom:0}.stat-row span{color:var(--muted)}.stat-row b{color:var(--teal)}details summary{cursor:pointer;font-weight:800;font-size:18px}.history-head,.history-row{display:grid;grid-template-columns:43% 57%;gap:8px}.history-head{padding:12px 0 9px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}.history-row{padding:13px 0;border-bottom:1px solid #e5ecea}.history-row:last-child{border-bottom:0}.history-date b,.history-date span{display:block}.history-date span{font-size:13px;color:var(--muted);margin-top:4px}.history-values{font-size:14px;line-height:1.55;color:var(--teal)}.empty{color:var(--muted);padding-top:12px}dialog{max-width:min(92vw,520px);border:0;border-radius:16px;box-shadow:0 10px 36px #0004;padding:20px}dialog::backdrop{background:#0005}@media(max-width:390px){.summary-grid{grid-template-columns:1fr}.input-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>離線運動紀錄</h1>
+      <div class="header-actions"><button class="backup-button" id="backup">備份</button></div>
+    </header>
+
+    <section class="card"><label class="sub">運動日期<input id="date" type="date"></label></section>
+
+    <section class="card">
+      <h2 id="yearTitle">年度統計</h2>
+      <div class="summary-grid" id="yearStats"></div>
+    </section>
+
+    <section class="card">
+      <h2 id="monthTitle">本月統計</h2>
+      <div class="summary-grid" id="monthStats"></div>
+    </section>
+
+    <section class="card rows">
+      <h2>本日正確總數</h2>
+      <label>深蹲次數<input class="value" id="squats" type="number" min="0" inputmode="numeric"></label>
+      <div class="field-title">超慢跑</div>
+      <div class="input-grid">
+        <label>次數<input class="value" id="jogSessions" type="number" min="0" inputmode="numeric"></label>
+        <label>時間（分鐘）<input class="value" id="jogMinutes" type="number" min="0" inputmode="numeric"></label>
+      </div>
+      <div class="field-title">啞鈴運動</div>
+      <div class="input-grid">
+        <label>組數<input class="value" id="dumbbellSets" type="number" min="0" inputmode="numeric"></label>
+        <label>每組次數<input class="value" id="dumbbellReps" type="number" min="0" inputmode="numeric"></label>
+      </div>
+      <p class="hint" id="dumbbellTotal">本日啞鈴總次數：0 次</p>
+      <div class="actions"><button id="save">儲存正確總數</button></div>
+    </section>
+
+    <section class="card"><details><summary>每日紀錄</summary><div id="history"></div></details></section>
+  </main>
+
+  <dialog id="backupDialog">
+    <h2>資料備份</h2>
+    <p class="sub">匯出可保存所有運動紀錄；匯入會覆蓋本機現有資料。</p>
+    <div class="actions"><button class="secondary" id="cancelBackup">取消</button><button class="secondary" id="importBackup">匯入備份</button><button id="exportBackup">匯出備份</button></div>
+  </dialog>
+  <input id="backupFile" type="file" accept="application/json,.json" hidden>
+
+  <script src="date_utils.js?v=1"></script>
+  <script src="stats.js?v=1"></script>
+  <script src="backup.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
