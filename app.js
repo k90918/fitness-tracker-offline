@@ -18,8 +18,7 @@ function statsMarkup(values) {
     ['超慢跑', `${values.jogSessions} 次`],
     ['超慢跑時間', `${values.jogMinutes} 分鐘`],
     ['啞鈴組數', `${values.dumbbellSets} 組`],
-    ['啞鈴總次數', `${values.dumbbellTotalReps} 次`],
-    ['啞鈴每組', `${values.dumbbellReps} 次`]
+    ['啞鈴總次數', `${values.dumbbellTotalReps} 次`]
   ].map(([label, value]) => `<div class="summary"><span>${label}</span><b>${value}</b></div>`).join('');
 }
 function renderHistory() {
