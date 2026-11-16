@@ -36,13 +36,13 @@ function renderHistory() {
 function render() {
   const date = $('#date').value;
   const record = state.records[date] || FitnessStats.zero();
-  $('#squats').value = record.squats || 0;
-  $('#waterCC').value = 0;
+  $('#squats').value = record.squats || '';
+  $('#waterCC').value = '';
   $('#waterTotal').textContent = `本日喝水累計：${record.waterCC || 0} CC`;
-  $('#jogSessions').value = record.jogSessions || 0;
-  $('#jogMinutes').value = record.jogMinutes || 0;
-  $('#dumbbellSets').value = record.dumbbellSets || 0;
-  $('#dumbbellReps').value = record.dumbbellReps || 0;
+  $('#jogSessions').value = record.jogSessions || '';
+  $('#jogMinutes').value = record.jogMinutes || '';
+  $('#dumbbellSets').value = record.dumbbellSets || '';
+  $('#dumbbellReps').value = record.dumbbellReps || '';
   const selected = FitnessStats.recordTotal(record);
   $('#dumbbellTotal').textContent = `本日啞鈴總次數：${selected.dumbbellTotalReps} 次`;
   const year = DateUtils.rocYear(date);
