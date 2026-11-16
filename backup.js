@@ -7,7 +7,7 @@
   const VERSION = 1;
   const datePattern = /^\d{4}-\d{2}-\d{2}$/;
   const fields = ['squats', 'jogSessions', 'jogMinutes', 'dumbbellSets', 'dumbbellReps'];
-  function validRecord(record) { return record && typeof record === 'object' && fields.every(field => Number.isInteger(record[field]) && record[field] >= 0); }
+  function validRecord(record) { return record && typeof record === 'object' && fields.every(field => Number.isInteger(record[field]) && record[field] >= 0) && (record.waterCC === undefined || (Number.isInteger(record.waterCC) && record.waterCC >= 0)); }
   function validateState(state) {
     if (!state || typeof state !== 'object' || !state.records || typeof state.records !== 'object' || Array.isArray(state.records)) throw new Error('備份檔格式不正確。');
     if (!Object.entries(state.records).every(([date, record]) => datePattern.test(date) && validRecord(record))) throw new Error('備份檔的運動紀錄格式不正確。');

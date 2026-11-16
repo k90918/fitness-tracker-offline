@@ -2,12 +2,13 @@ const assert = require('node:assert/strict');
 const { totals, recordTotal } = require('./stats');
 const { createBackup, restoreBackup, backupFilename } = require('./backup');
 const records = {
-  '2026-11-01': { squats: 30, jogSessions: 1, jogMinutes: 20, dumbbellSets: 3, dumbbellReps: 12 },
-  '2026-11-15': { squats: 40, jogSessions: 2, jogMinutes: 35, dumbbellSets: 4, dumbbellReps: 10 },
-  '2027-01-01': { squats: 10, jogSessions: 0, jogMinutes: 0, dumbbellSets: 1, dumbbellReps: 8 }
+  '2026-11-01': { squats: 30, waterCC: 1800, jogSessions: 1, jogMinutes: 20, dumbbellSets: 3, dumbbellReps: 12 },
+  '2026-11-15': { squats: 40, waterCC: 2200, jogSessions: 2, jogMinutes: 35, dumbbellSets: 4, dumbbellReps: 10 },
+  '2027-01-01': { squats: 10, waterCC: 1500, jogSessions: 0, jogMinutes: 0, dumbbellSets: 1, dumbbellReps: 8 }
 };
-assert.deepEqual(recordTotal(records['2026-11-01']), { squats: 30, jogSessions: 1, jogMinutes: 20, dumbbellSets: 3, dumbbellReps: 12, dumbbellTotalReps: 36 });
-assert.deepEqual(totals(records, date => date.startsWith('2026-11')), { squats: 70, jogSessions: 3, jogMinutes: 55, dumbbellSets: 7, dumbbellReps: 22, dumbbellTotalReps: 76 });
+assert.deepEqual(recordTotal(records['2026-11-01']), { squats: 30, waterCC: 1800, jogSessions: 1, jogMinutes: 20, dumbbellSets: 3, dumbbellReps: 12, dumbbellTotalReps: 36 });
+assert.deepEqual(recordTotal({ squats: 1, jogSessions: 0, jogMinutes: 0, dumbbellSets: 0, dumbbellReps: 0 }), { squats: 1, waterCC: 0, jogSessions: 0, jogMinutes: 0, dumbbellSets: 0, dumbbellReps: 0, dumbbellTotalReps: 0 });
+assert.deepEqual(totals(records, date => date.startsWith('2026-11')), { squats: 70, waterCC: 4000, jogSessions: 3, jogMinutes: 55, dumbbellSets: 7, dumbbellReps: 22, dumbbellTotalReps: 76 });
 const state = { records };
 const backup = createBackup(state, '2026-11-15T00:00:00.000Z');
 assert.deepEqual(restoreBackup(JSON.stringify(backup)), state);

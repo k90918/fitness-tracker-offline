@@ -10,11 +10,12 @@ $('#date').value = DateUtils.localDateString();
 function saveState() { localStorage.setItem(storageKey, JSON.stringify(state)); }
 function integerValue(id) { return Math.max(0, parseInt($(id).value || '0', 10) || 0); }
 function currentRecord() {
-  return { squats: integerValue('#squats'), jogSessions: integerValue('#jogSessions'), jogMinutes: integerValue('#jogMinutes'), dumbbellSets: integerValue('#dumbbellSets'), dumbbellReps: integerValue('#dumbbellReps') };
+  return { squats: integerValue('#squats'), waterCC: integerValue('#waterCC'), jogSessions: integerValue('#jogSessions'), jogMinutes: integerValue('#jogMinutes'), dumbbellSets: integerValue('#dumbbellSets'), dumbbellReps: integerValue('#dumbbellReps') };
 }
 function statsMarkup(values) {
   return [
     ['深蹲', `${values.squats} 次`],
+    ['喝水', `${values.waterCC} CC`],
     ['超慢跑', `${values.jogSessions} 次`],
     ['超慢跑時間', `${values.jogMinutes} 分鐘`],
     ['啞鈴組數', `${values.dumbbellSets} 組`],
@@ -28,7 +29,7 @@ function renderHistory() {
     const value = FitnessStats.recordTotal(record);
     const day = new Date(`${date}T00:00:00`);
     const weekday = ['日','一','二','三','四','五','六'][day.getDay()];
-    return `<div class="history-row"><div class="history-date"><b>民國 ${DateUtils.rocYear(date)} 年 ${Number(date.slice(5, 7))} 月 ${Number(date.slice(8, 10))} 日</b><span>星期${weekday}</span></div><div class="history-values">深蹲 ${value.squats} 次<br>超慢跑 ${value.jogSessions} 次／${value.jogMinutes} 分鐘<br>啞鈴 ${value.dumbbellSets} 組 × ${value.dumbbellReps} 次＝${value.dumbbellTotalReps} 次</div></div>`;
+    return `<div class="history-row"><div class="history-date"><b>民國 ${DateUtils.rocYear(date)} 年 ${Number(date.slice(5, 7))} 月 ${Number(date.slice(8, 10))} 日</b><span>星期${weekday}</span></div><div class="history-values">深蹲 ${value.squats} 次<br>喝水 ${value.waterCC} CC<br>超慢跑 ${value.jogSessions} 次／${value.jogMinutes} 分鐘<br>啞鈴 ${value.dumbbellSets} 組 × ${value.dumbbellReps} 次＝${value.dumbbellTotalReps} 次</div></div>`;
   }).join('');
   $('#history').innerHTML = `<div class="history-head"><span>日期</span><span>運動內容</span></div>${rows}`;
 }
@@ -36,6 +37,7 @@ function render() {
   const date = $('#date').value;
   const record = state.records[date] || FitnessStats.zero();
   $('#squats').value = record.squats || 0;
+  $('#waterCC').value = record.waterCC || 0;
   $('#jogSessions').value = record.jogSessions || 0;
   $('#jogMinutes').value = record.jogMinutes || 0;
   $('#dumbbellSets').value = record.dumbbellSets || 0;
