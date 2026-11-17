@@ -9,6 +9,17 @@ $('#date').value = DateUtils.localDateString();
 
 function saveState() { localStorage.setItem(storageKey, JSON.stringify(state)); }
 function integerValue(id) { return Math.max(0, parseInt($(id).value || '0', 10) || 0); }
+function formatLastWaterAt(timestamp, now = new Date()) {
+  if (!Number.isFinite(timestamp) || timestamp <= 0) return '尚未輸入';
+  const saved = new Date(timestamp);
+  const time = `${String(saved.getHours()).padStart(2, '0')}:${String(saved.getMinutes()).padStart(2, '0')}`;
+  const isSameDay = saved.getFullYear() === now.getFullYear() && saved.getMonth() === now.getMonth() && saved.getDate() === now.getDate();
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  const isYesterday = saved.getFullYear() === yesterday.getFullYear() && saved.getMonth() === yesterday.getMonth() && saved.getDate() === yesterday.getDate();
+  if (isSameDay) return `上次：${time}`;
+  if (isYesterday) return `上次：昨天 ${time}`;
+  return `上次：${saved.getMonth() + 1}/${saved.getDate()} ${time}`;
+}
 function currentRecord(existingWaterCC = 0) {
   return { squats: integerValue('#squats'), waterCC: existingWaterCC + integerValue('#waterCC'), jogSessions: integerValue('#jogSessions'), jogMinutes: integerValue('#jogMinutes'), dumbbellSets: integerValue('#dumbbellSets'), dumbbellReps: integerValue('#dumbbellReps') };
 }
@@ -39,6 +50,7 @@ function render() {
   $('#squats').value = record.squats || '';
   $('#waterCC').value = '';
   $('#waterTotal').textContent = `本日喝水累計：${record.waterCC || 0} CC`;
+  $('#lastWaterAt').textContent = formatLastWaterAt(state.lastWaterAt);
   $('#jogSessions').value = record.jogSessions || '';
   $('#jogMinutes').value = record.jogMinutes || '';
   $('#dumbbellSets').value = record.dumbbellSets || '';
@@ -60,7 +72,7 @@ function updateDumbbellTotal() {
 $('#date').addEventListener('change', render);
 $('#dumbbellSets').addEventListener('input', updateDumbbellTotal);
 $('#dumbbellReps').addEventListener('input', updateDumbbellTotal);
-$('#save').onclick = () => { const existingWaterCC = state.records[$('#date').value]?.waterCC || 0; state.records[$('#date').value] = currentRecord(existingWaterCC); saveState(); render(); alert('已儲存；喝水量已累加。'); };
+$('#save').onclick = () => { const waterAddition = integerValue('#waterCC'); const existingWaterCC = state.records[$('#date').value]?.waterCC || 0; state.records[$('#date').value] = currentRecord(existingWaterCC); if (waterAddition > 0) state.lastWaterAt = Date.now(); saveState(); render(); alert(waterAddition > 0 ? '已儲存；喝水量已累加。' : '已儲存到此裝置。'); };
 
 function downloadBackup() {
   const backup = FitnessBackup.createBackup(state);

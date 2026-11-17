@@ -8,10 +8,13 @@
   const datePattern = /^\d{4}-\d{2}-\d{2}$/;
   const fields = ['squats', 'jogSessions', 'jogMinutes', 'dumbbellSets', 'dumbbellReps'];
   function validRecord(record) { return record && typeof record === 'object' && fields.every(field => Number.isInteger(record[field]) && record[field] >= 0) && (record.waterCC === undefined || (Number.isInteger(record.waterCC) && record.waterCC >= 0)); }
+  function validTimestamp(value) { return value === undefined || (Number.isFinite(value) && value > 0); }
   function validateState(state) {
     if (!state || typeof state !== 'object' || !state.records || typeof state.records !== 'object' || Array.isArray(state.records)) throw new Error('備份檔格式不正確。');
-    if (!Object.entries(state.records).every(([date, record]) => datePattern.test(date) && validRecord(record))) throw new Error('備份檔的運動紀錄格式不正確。');
-    return { records: Object.fromEntries(Object.entries(state.records).map(([date, record]) => [date, { ...record }])) };
+    if (!Object.entries(state.records).every(([date, record]) => datePattern.test(date) && validRecord(record)) || !validTimestamp(state.lastWaterAt)) throw new Error('備份檔的運動紀錄格式不正確。');
+    const result = { records: Object.fromEntries(Object.entries(state.records).map(([date, record]) => [date, { ...record }])) };
+    if (state.lastWaterAt !== undefined) result.lastWaterAt = state.lastWaterAt;
+    return result;
   }
   function createBackup(state, exportedAt = new Date().toISOString()) { return { format: FORMAT, version: VERSION, exportedAt, state: validateState(state) }; }
   function restoreBackup(text) {
